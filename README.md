@@ -1,5 +1,6 @@
 # Allgemein
 Im folgenden wird der Aufbau / die Package Struktur der App etwas genauer beschrieben:
+TBC...
 
 # Data
 Alle Daten der App werden im json format gespeichert. Um die Daten in json zu konvertieren, wird das package **json_annotation** verwendet.
@@ -48,5 +49,6 @@ https://flutter.dev/docs/cookbook/navigation/navigation-basics
 2. Es wurden Spaces in der App gespeichert -> Anzeige der Tabs (Suche + Portfolio)
     
 
-#Widgets
+# Widgets
+Widgets, die zur Darstellung der Informationen benötigt werden
 
