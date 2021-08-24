@@ -15,7 +15,9 @@ class LemonMarketSearch extends StatelessWidget {
     return ChangeNotifierProvider(
         create: (_) => SearchProvider(),
         builder: (context, child) {
-          return LemonMarketSearchWidget(spaceData: spaceData,);
+          return LemonMarketSearchWidget(
+            spaceData: spaceData,
+          );
         });
   }
 }
@@ -31,11 +33,11 @@ class LemonMarketSearchWidget extends StatefulWidget {
 
 class _LemonMarketSearchWidgetState extends State<LemonMarketSearchWidget> {
   TextEditingController _controller = TextEditingController();
-  FocusNode focusNode = FocusNode();
+  FocusNode _focusNode = FocusNode();
 
   @override
   void initState() {
-    focusNode.addListener(() {
+    _focusNode.addListener(() {
       setState(() {});
     });
     super.initState();
@@ -44,47 +46,50 @@ class _LemonMarketSearchWidgetState extends State<LemonMarketSearchWidget> {
   @override
   void dispose() {
     _controller.dispose();
-    focusNode.dispose();
+    _focusNode.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     bool searching = context.watch<SearchProvider>().searching;
+    String? error = context.watch<SearchProvider>().errorMessage;
+    bool hasNextOrPrevious = context.watch<SearchProvider>().instruments.isNotEmpty &&
+        (context.watch<SearchProvider>().previousUrl != null || context.watch<SearchProvider>().nextUrl != null);
     return Center(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0),
-              child: Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24.0),
+          child: Column(
+            children: [
+              Row(
                 children: [
-                  Row(
-                    children: [
-                      Text(
-                        'Suche:',
-                        textScaleFactor: 1.5,
-                      ),
-                      Container(
-                        width: 16,
-                      ),
-                      SearchTypeDropdown()
-                    ],
+                  Text(
+                    'Suche:',
+                    textScaleFactor: 1.5,
                   ),
                   Container(
-                    height: 8,
+                    width: 16,
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Container(
-                        width: MediaQuery.of(context).size.width / 1.5,
-                        child: TextField(
-                          controller: _controller,
-                          focusNode: focusNode,
-                          decoration: InputDecoration(
-                              suffixIcon: focusNode.hasFocus
-                                  ? IconButton(
+                  SearchTypeDropdown()
+                ],
+              ),
+              Container(
+                height: 8,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    width: MediaQuery.of(context).size.width / 1.5,
+                    child: TextField(
+                      controller: _controller,
+                      focusNode: _focusNode,
+                      decoration: InputDecoration(
+                          suffixIcon: _focusNode.hasFocus
+                              ? IconButton(
                                   icon: Icon(Icons.clear),
                                   onPressed: () {
                                     setState(() {
@@ -93,47 +98,85 @@ class _LemonMarketSearchWidgetState extends State<LemonMarketSearchWidget> {
                                     context.read<SearchProvider>().setSearchString("");
                                     FocusScope.of(context).unfocus();
                                   })
-                                  : Container(
-                                width: 0,
-                              )),
-                          onChanged: (value) {
-                            context.read<SearchProvider>().setSearchString(value);
-                          },
-                        ),
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.search,),
-                        onPressed: () {
-                          if (!searching) {
-                            context.read<SearchProvider>().searchInstruments(widget.spaceData);
-                            FocusScope.of(context).unfocus();
-                          }
-                        },
-                      ),
-                    ],
+                              : Container(
+                                  width: 0,
+                                )),
+                      onChanged: (value) {
+                        context.read<SearchProvider>().setSearchString(value);
+                      },
+                    ),
+                  ),
+                  IconButton(
+                    icon: Icon(
+                      Icons.search,
+                    ),
+                    onPressed: () {
+                      if (!searching) {
+                        context.read<SearchProvider>().searchInstruments(widget.spaceData);
+                        FocusScope.of(context).unfocus();
+                      }
+                    },
                   ),
                 ],
               ),
-            ),
-            context.watch<SearchProvider>().instruments.isNotEmpty
-                ? Divider(
-              height: 40,
-              thickness: 2,
-            )
-                : Container(),
-            searching
-                ? Padding(
-              padding: const EdgeInsets.only(top: 24.0),
-              child: CircularProgressIndicator(),
-            )
-                : Flexible(
-              child: ListView(
-                shrinkWrap: true,
-                children: _getAllInstruments(context),
+            ],
+          ),
+        ),
+        error != null ? Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(error, style: TextStyle(color: Colors.red),),
+        ) : Container(),
+        hasNextOrPrevious
+            ? Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  context.watch<SearchProvider>().previousUrl != null
+                      ? IconButton(
+                          icon: RotatedBox(
+                            quarterTurns: 2,
+                            child: Icon(
+                              Icons.forward,
+                            ),
+                          ),
+                          onPressed: () {
+                            if (!searching) {
+                              context.read<SearchProvider>().searchPrevious(widget.spaceData);
+                              FocusScope.of(context).unfocus();
+                            }
+                          },
+                        )
+                      : Container(),
+                  context.watch<SearchProvider>().nextUrl != null
+                      ? IconButton(
+                          icon: Icon(
+                            Icons.forward,
+                          ),
+                          onPressed: () {
+                            if (!searching) {
+                              context.read<SearchProvider>().searchNext(widget.spaceData);
+                              FocusScope.of(context).unfocus();
+                            }
+                          },
+                        )
+                      : Container(),
+                ],
+              )
+            : Container(
+                height: 20,
               ),
-            )
-          ],
-        ));
+        searching
+            ? Padding(
+                padding: const EdgeInsets.only(top: 24.0),
+                child: CircularProgressIndicator(),
+              )
+            : Flexible(
+                child: ListView(
+                  shrinkWrap: true,
+                  children: _getAllInstruments(context),
+                ),
+              )
+      ],
+    ));
   }
 
   List<Card> _getAllInstruments(BuildContext context) {
@@ -149,6 +192,15 @@ class _LemonMarketSearchWidgetState extends State<LemonMarketSearchWidget> {
       result.add(Card(child: tile));
     });
     return result;
+  }
+}
+
+class SearchByUrlButton extends StatelessWidget {
+  const SearchByUrlButton({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container();
   }
 }
 

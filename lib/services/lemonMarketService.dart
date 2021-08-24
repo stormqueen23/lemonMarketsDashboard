@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:lemon_markets_client/lemon_markets_client.dart';
 import 'package:lemon_markets_simple_dashboard/data/authData.dart';
+import 'package:lemon_markets_simple_dashboard/error.dart';
 import 'package:logging/logging.dart';
 
 class LemonMarketService {
@@ -19,6 +20,7 @@ class LemonMarketService {
       return result;
     } on LemonMarketsException catch (e) {
       log.warning(e, e.stacktrace);
+      throw LemonMarketsError(e.toString());
     }
   }
 
@@ -28,6 +30,7 @@ class LemonMarketService {
       return state;
     } on LemonMarketsException catch (e) {
       log.warning(e, e.stacktrace);
+      throw LemonMarketsError(e.toString());
     }
   }
 
@@ -37,6 +40,7 @@ class LemonMarketService {
       return result;
     } on LemonMarketsException catch (e) {
       log.warning(e, e.stacktrace);
+      throw LemonMarketsError(e.toString());
     }
   }
 
@@ -49,6 +53,18 @@ class LemonMarketService {
       return result;
     } on LemonMarketsException catch (e) {
       log.warning(e, e.stacktrace);
+      throw LemonMarketsError(e.toString());
+    }
+  }
+
+  Future<ResultList<Instrument>?> searchInstrumentsByUrl(AccessToken token, String url) async {
+    try {
+      ResultList<Instrument> result = await _market.searchInstrumentsByUrl(token, url);
+      //add items to a local cache (a detail-screen for an instrument can get items for this cache)
+      return result;
+    } on LemonMarketsException catch (e) {
+      log.warning(e, e.stacktrace);
+      throw LemonMarketsError(e.toString());
     }
   }
 
@@ -65,6 +81,7 @@ class LemonMarketService {
       }
     } on LemonMarketsException catch (e) {
       log.warning(e, e.stacktrace);
+      throw LemonMarketsError(e.toString());
     }
     return result;
   }
@@ -77,8 +94,8 @@ class LemonMarketService {
       return result;
     } on LemonMarketsException catch (e) {
       log.warning(e, e.stacktrace);
+      throw LemonMarketsError(e.toString());
     }
-    return null;
   }
 
   Future<List<ExistingOrder>> getOrders(AuthData currentSpace, OrderSide? side, OrderStatus? status) async {
@@ -94,6 +111,7 @@ class LemonMarketService {
       }
     } on LemonMarketsException catch (e) {
       log.warning(e, e.stacktrace);
+      throw LemonMarketsError(e.toString());
     }
     return result;
   }
