@@ -1,4 +1,11 @@
 # Allgemein
+Für dieses Projekt wird der lemonMarketsClient benötigt:
+https://github.com/stormqueen23/lemonMarketsClient
+Dieser muss in einem Ordner, der parallel zu diesem Projekt ist, angesiedelt sein:
+- /projects
+    - /lemonMarketsClient
+    - /lemonMarketsDashboard
+
 Im folgenden wird der Aufbau / die Package Struktur der App etwas genauer beschrieben:
 TBC...
 
