@@ -14,6 +14,11 @@ dependencies:
 
   cupertino_icons: ^1.0.2
 
+  lemon_markets_client:
+    git:
+      url: https://github.com/stormqueen23/lemonMarketsClient.git
+    #path: "../lemon_market_client" #In this case the lemon.markets SDK is in a paralell folder to your new project
+
   intl: ^0.17.0
 
   shared_preferences: ^2.0.6
@@ -28,8 +33,7 @@ dependencies:
 
   json_annotation: ^4.0.0
 
-  lemon_markets_client:
-    path: "../lemon_market_client"
+
 
 dev_dependencies:
   flutter_test:

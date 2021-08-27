@@ -320,9 +320,11 @@ packages:
   lemon_markets_client:
     dependency: "direct main"
     description:
-      path: "../lemon_market_client"
-      relative: true
-    source: path
+      path: "."
+      ref: HEAD
+      resolved-ref: c1dfb0ce243f9277f3be157e897600437bfef19c
+      url: "https://github.com/stormqueen23/lemonMarketsClient.git"
+    source: git
     version: "0.0.1"
   logging:
     dependency: "direct main"

@@ -32,7 +32,7 @@ class LemonMarketsDashboardApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Lemon markets portfolio',
+      title: 'Lemon markets dashboard',
       theme: ThemeData(
         primarySwatch: Colors.yellow,
       ),

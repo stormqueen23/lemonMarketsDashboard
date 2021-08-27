@@ -42,7 +42,7 @@ class HomeWidget extends StatelessWidget {
         ? Scaffold(
             appBar: AppBar(
               centerTitle: true,
-              title: Text('- Kein Space -'),
+              title: Text('- No Space -'),
             ),
             body: Center(child: AddSpaceWidget()),
           )

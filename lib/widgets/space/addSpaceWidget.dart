@@ -92,7 +92,7 @@ class _AddSpaceWidgetState extends State<AddSpaceWidget> {
                 Padding(
                   padding: const EdgeInsets.only(top: 24.0, bottom: 16),
                   child: Text(
-                    'Manuell hinzufügen:',
+                    'Add manually:',
                     textScaleFactor: 1.4,
                   ),
                 ),
@@ -127,7 +127,7 @@ class _AddSpaceWidgetState extends State<AddSpaceWidget> {
                     onPressed: manualClientId != null && manualClientSecret != null
                         ? () => context.read<LemonMarketsProvider>().addSpace(manualClientId!, manualClientSecret!)
                         : null,
-                    child: Text('Hinzufügen'),
+                    child: Text('add'),
                   ),
                 )
               ],
