@@ -90,7 +90,7 @@ class _MainTabWidgetState extends State<MainTabWidget> {
               spaceData: widget.currentSpace,
             )
           : PortfolioTabWidget(
-              spaceData: widget.currentSpace,
+              authData: widget.currentSpace,
             ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: currentIndex,
