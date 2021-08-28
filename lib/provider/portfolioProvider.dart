@@ -27,7 +27,7 @@ class PortfolioProvider with ChangeNotifier {
       portfolioSum += element.latestTotalValue;
     });
 
-    _getLatestQuoteForItems(authData);
+    _initLatestQuoteForItems(authData);
     _initOrdersForItems(authData);
   }
 
@@ -57,7 +57,7 @@ class PortfolioProvider with ChangeNotifier {
 
   }
 
-  void _getLatestQuoteForItems(AuthData authData) {
+  void _initLatestQuoteForItems(AuthData authData) {
     items.forEach((element) {
       _marketService.getLatestQuote(authData, element.instrument.isin).then((value) {
         latestQuotes[element.instrument.isin] = value;

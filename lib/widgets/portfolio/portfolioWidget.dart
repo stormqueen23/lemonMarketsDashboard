@@ -40,22 +40,30 @@ class _PortfolioTabWidgetState extends State<PortfolioTabWidget> {
               log.fine('all portfolioItems received');
               return Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  children: [
-                    PortfolioHeaderWidget(),
-                    Container(
-                      height: 8,
-                    ),
-                    Expanded(
-                      child: PortfolioItemsListWidget(),
-                    ),
-                  ],
-                ),
+                child: PortfolioWidget(),
               );
             },
           ),
         );
       },
+    );
+  }
+}
+
+class PortfolioWidget extends StatelessWidget {
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        PortfolioHeaderWidget(),
+        Container(
+          height: 8,
+        ),
+        Expanded(
+          child: PortfolioItemsListWidget(),
+        ),
+      ],
     );
   }
 }
