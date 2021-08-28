@@ -68,14 +68,14 @@ class LemonMarketService {
     }
   }
 
-  Future<List<PortfolioItem>> getPortfolioItems(AuthData currentSpace) async {
+  Future<List<PortfolioItem>> getPortfolioItems(AuthData authData) async {
     List<PortfolioItem> result = [];
     try {
-      ResultList<PortfolioItem> tmp = await _market.getPortfolioItems(currentSpace.token!, currentSpace.spaceUuid!);
+      ResultList<PortfolioItem> tmp = await _market.getPortfolioItems(authData.token!, authData.spaceUuid!);
       result.addAll(tmp.result);
       String? nextUrl = tmp.next;
       while (nextUrl != null) {
-        tmp = await _market.getPortfolioItems(currentSpace.token!, nextUrl);
+        tmp = await _market.getPortfolioItems(authData.token!, nextUrl);
         result.addAll(tmp.result);
         nextUrl = tmp.next;
       }
@@ -86,10 +86,10 @@ class LemonMarketService {
     return result;
   }
 
-  Future<Quote?> getLatestQuote(AuthData currentSpace, String isin) async {
+  Future<Quote?> getLatestQuote(AuthData authData, String isin) async {
     try {
       Quote? result;
-      ResultList<Quote>? all = await _market.getLatestQuotes(currentSpace.token!, [isin]);
+      ResultList<Quote>? all = await _market.getLatestQuotes(authData.token!, [isin]);
       result = all.result.where((element) => element.isin == isin).first;
       return result;
     } on LemonMarketsException catch (e) {
@@ -98,14 +98,14 @@ class LemonMarketService {
     }
   }
 
-  Future<List<ExistingOrder>> getOrders(AuthData currentSpace, OrderSide? side, OrderStatus? status) async {
+  Future<List<ExistingOrder>> getOrders(AuthData authData, OrderSide? side, OrderStatus? status) async {
     List<ExistingOrder> result = [];
     try {
-      ResultList<ExistingOrder> tmp = await _market.getOrders(currentSpace.token!, currentSpace.spaceUuid!, side: side, status: status);
+      ResultList<ExistingOrder> tmp = await _market.getOrders(authData.token!, authData.spaceUuid!, side: side, status: status);
       result.addAll(tmp.result);
       String? nextUrl = tmp.next;
       while (nextUrl != null) {
-        tmp = await _market.getOrdersByUrl(currentSpace.token!, nextUrl);
+        tmp = await _market.getOrdersByUrl(authData.token!, nextUrl);
         result.addAll(tmp.result);
         nextUrl = tmp.next;
       }

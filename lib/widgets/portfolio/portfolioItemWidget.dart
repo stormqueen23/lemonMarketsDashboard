@@ -70,7 +70,7 @@ class PortfolioListItem extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               AttributeRow(
-                title: 'Ø Kaufpreis: ',
+                title: 'Ø Buy price: ',
                 value: AppHelper.toDisplayMoneyString(element.latestTotalValue),
                 mainAxisSize: MainAxisSize.min,
               ),
@@ -88,7 +88,7 @@ class PortfolioListItem extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               AttributeRow(
-                title: 'Ø Einzelpreis: ',
+                title: 'Ø Single price: ',
                 value: '$quantity x ${AppHelper.toDisplayMoneyString(element.averagePrice)}',
                 mainAxisSize: MainAxisSize.min,
               ),
@@ -99,7 +99,7 @@ class PortfolioListItem extends StatelessWidget {
             height: height,
           ),
           AttributeWidgetRow(
-            title: 'Kauf: ',
+            title: 'Buy: ',
             value: PortfolioItemOrderDatesWidget(
               orderDates: boughtDates,
             ),
@@ -109,7 +109,7 @@ class PortfolioListItem extends StatelessWidget {
           ),
           sellDates.length > 0
               ? AttributeWidgetRow(
-              title: 'Verkauf: ',
+              title: 'Sell: ',
               value: PortfolioItemOrderDatesWidget(
                 orderDates: sellDates,
                 showDetails: true,
@@ -152,7 +152,7 @@ class _PortfolioItemOrderDatesWidgetState extends State<PortfolioItemOrderDatesW
               ? Container()
               : Padding(
             padding: const EdgeInsets.only(top: 4.0, bottom: 8),
-            child: Text(showAll ? 'Zeige weniger...' : 'Zeige mehr...'),
+            child: Text(showAll ? 'show less...' : 'show more...'),
           )
         ],
       ),

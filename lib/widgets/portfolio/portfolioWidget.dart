@@ -8,8 +8,8 @@ import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 
 class PortfolioTabWidget extends StatefulWidget {
-  final AuthData spaceData;
-  PortfolioTabWidget({Key? key, required this.spaceData}) : super(key: key);
+  final AuthData authData;
+  PortfolioTabWidget({Key? key, required this.authData}) : super(key: key);
 
   @override
   _PortfolioTabWidgetState createState() => _PortfolioTabWidgetState();
@@ -30,7 +30,7 @@ class _PortfolioTabWidgetState extends State<PortfolioTabWidget> {
         return RefreshIndicator(
           onRefresh: _refreshData,
           child: FutureBuilder(
-            future: context.read<PortfolioProvider>().init(widget.spaceData),
+            future: context.read<PortfolioProvider>().init(widget.authData),
             builder: (context, projectSnap) {
               log.fine('${projectSnap.connectionState} ${projectSnap.data}');
               if (projectSnap.connectionState != ConnectionState.done) {
@@ -56,25 +56,6 @@ class _PortfolioTabWidgetState extends State<PortfolioTabWidget> {
           ),
         );
       },
-    );
-  }
-}
-class PortfolioWidget extends StatelessWidget {
-
-  const PortfolioWidget({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        PortfolioHeaderWidget(),
-        Container(
-          height: 8,
-        ),
-        Expanded(
-          child: PortfolioItemsListWidget(),
-        ),
-      ],
     );
   }
 }
