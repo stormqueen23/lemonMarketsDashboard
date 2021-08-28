@@ -208,10 +208,137 @@ class LemonMarketService {
 Now we have all the required data (AccessToken and Space-Uuid) to make more API calls and get all the data we need for our application
 
 ## The MainTabWidget
-...
+Once you have entered the credentials you can see a screen with two tabs. The search tab and the portfolio tab. 
+Both tabs have one or more widgets for displaying the data and a provider for their state management.
 
 ### Search-Tab
-...
+The search tab is very simple. It contains a drop down button for the different instrument types, a text field and a button that starts the search.
+The different search types are represented by the enum *SearchType* from the lemon.markets SDK. 
+In the text field you can enter the query you want to search for and the button starts the search.
+In the widget:
+```
+IconButton(
+  icon: Icon(
+    Icons.search,
+  ),
+  onPressed: () {
+    if (!searching) {
+      context.read<SearchProvider>().searchInstruments(widget.authData);
+    }
+  },
+)
+```
+For the search you need the AccessToken that was received earlier in the LemonMarketsProvider. 
+The search is done in the SearchProvider who delegates it to the MarketService:
+```
+class SearchProvider with ChangeNotifier {
+  LemonMarketService marketService = GetIt.instance<LemonMarketService>();
+  
+  String? searchString;
+  SearchType searchType = SearchType.stock;
+  
+  List<Instrument> instruments = [];
+  String? previousUrl;
+  String? nextUrl;
+  
+  void searchInstruments(AuthData authData) {
+    marketService
+        .searchInstruments(authData.token!, search: searchString, type: searchType)
+        .then(
+          (result) {
+            if (result != null) {
+              this.instruments = result.result;
+              this.nextUrl = result.next;
+              this.previousUrl = result.previous;
+            }
+          },
+    );
+    notifyListeners();
+  }
+}
+```
+And the MarketService needs one more method:
+```
+Future<ResultList<Instrument>?> searchInstruments(AccessToken token, {String? search, SearchType? type, bool? tradable, String? currency, String? limit, int? offset}) async {
+    try {
+      ResultList<Instrument> result = await _market.searchInstruments(token, currency: currency, limit: limit, offset: offset, query: search, tradable: tradable, types: type != null ? [type] : null);
+      return result;
+    } on LemonMarketsException catch (e) {
+      throw LemonMarketsError(e.toString());
+    }
+  }
+```
+As you can see the search for instruments returns the type *ResultList*. 
+This is a type from the lemon.markets SDK that contains beside the list of results an url for the previous and next results.
+You can use this url for pagination. 
+Depending on whether this next (or previous) is set a button is shown that triggers the search for the next url
+In the widget:
+```
+context.watch<SearchProvider>().nextUrl != null ? IconButton(
+   icon: Icon(
+      Icons.forward,
+   ),
+   onPressed: () {
+      if (!searching) {
+         context.read<SearchProvider>().searchNext(widget.authData);
+      }
+   },
+)
+: Container(),
+```
+In the searchProvider:
+```
+void searchNext(AuthData authData) {
+ if (nextUrl != null) {
+   marketService
+       .searchInstrumentsByUrl(authData.token!, nextUrl)
+       .then(
+         (result) {
+       if (result != null) {
+         this.instruments = result.result;
+         this.nextUrl = result.next;
+         this.previousUrl = result.previous;
+       }
+     },
+   );
+   notifyListeners();
+ }
+}
+```
+In the marketService:
+```
+Future<ResultList<Instrument>?> searchInstrumentsByUrl(AccessToken token, String url) async {
+   try {
+      ResultList<Instrument> result = await _market.searchInstrumentsByUrl(token, url);
+      return result;
+   } on LemonMarketsException catch (e) {
+      throw LemonMarketsError(e.toString());
+   }
+}
+ ```
+> For all API calls that return the type *ResultList* a second method exists where you just need the AccessToken and the url as parameter. In this case:
+> searchInstruments(token, currency: currency, limit: limit, offset: offset, query: search, tradable: tradable, types: type != null ? [type] : null)
+> and 
+> searchInstrumentsByUrl(token, url)
 
+Finally we need a widget to display the result. In our case a ListView:
+```
+ListView(
+   children: _getAllInstruments(context),
+)
+...
+List<Card> _getAllInstruments(BuildContext context) {
+   List<Card> result = [];
+   context.watch<SearchProvider>().instruments.forEach((element) {
+      ListTile tile = ListTile(
+         title: Text('${element.title}'),
+         subtitle: Text('${element.isin}'),
+        );
+      result.add(Card(child: tile));
+   });
+   return result;
+}
+```
+That's it. Search-Tab is done so far. 
 ### Portfolio-Tab
 ...

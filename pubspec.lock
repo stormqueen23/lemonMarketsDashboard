@@ -322,7 +322,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: c1dfb0ce243f9277f3be157e897600437bfef19c
+      resolved-ref: fd1b575cd0cab7566de16682da6ed726e60258d3
       url: "https://github.com/stormqueen23/lemonMarketsClient.git"
     source: git
     version: "0.0.1"

@@ -67,7 +67,7 @@ class _LemonMarketSearchWidgetState extends State<LemonMarketSearchWidget> {
               Row(
                 children: [
                   Text(
-                    'Suche:',
+                    'Search:',
                     textScaleFactor: 1.5,
                   ),
                   Container(
@@ -242,22 +242,22 @@ class SearchTypeDropdown extends StatelessWidget {
     String result = "";
     switch (type) {
       case SearchType.bond:
-        result = "Anleihe";
+        result = "Bond";
         break;
       case SearchType.etf:
         result = "ETF";
         break;
       case SearchType.fund:
-        result = "Fond";
+        result = "Fund";
         break;
       case SearchType.stock:
-        result = "Aktie";
+        result = "Stock";
         break;
       case SearchType.warrant:
-        result = "Optionsschein";
+        result = "Warrant";
         break;
       case SearchType.none:
-        result = "Alles";
+        result = "All";
         break;
     }
     return result;

@@ -106,7 +106,7 @@ class _MainTabWidgetState extends State<MainTabWidget> {
     List<BottomNavigationBarItem> result = [];
     result.add(BottomNavigationBarItem(
       icon: Icon(Icons.search),
-      label: 'Suche',
+      label: 'Search',
     ));
     result.add(BottomNavigationBarItem(
       icon: Icon(Icons.show_chart_outlined),

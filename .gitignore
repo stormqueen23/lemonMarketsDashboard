@@ -44,5 +44,4 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
-
-/lib/data/authData.g.dart
+/lib/data/*.g.dart
