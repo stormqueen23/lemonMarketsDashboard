@@ -18,9 +18,17 @@ class PortfolioProvider with ChangeNotifier {
   bool sumInitialized = false;
 
   Future<void> init(AuthData authData) async {
+    _resetData();
     spaceStateDetails = await _marketService.getSpaceState(authData);
-    await _initItems(authData);
-    notifyListeners();
+    items = await _marketService.getPortfolioItems(authData);
+    items.forEach((element) {
+      latestQuotes[element.instrument.isin] = null;
+      existingOrders[element.instrument.isin] = [];
+      portfolioSum += element.latestTotalValue;
+    });
+
+    _getLatestQuoteForItems(authData);
+    _initOrdersForItems(authData);
   }
 
   Quote? getLatestQuote(String isin) {
@@ -39,40 +47,30 @@ class PortfolioProvider with ChangeNotifier {
     return all;
   }
 
-  Future<void> _initItems(AuthData authData) async {
+  void _resetData() {
     currentSum = 0;
     portfolioSum = 0;
     sumInitialized = false;
-
-    items = [];
-    items = await _marketService.getPortfolioItems(authData);
-
     latestQuotes = {};
     existingOrders = {};
+    items = [];
 
-    items.forEach((element) async {
-      latestQuotes[element.instrument.isin] = null;
-      existingOrders[element.instrument.isin] = [];
-      await _initPortfolioItem(authData, element.instrument.isin);
-    });
-    await _initOrders(authData);
-    await _calculatePortfolioSum();
   }
 
-  Future<void> _initPortfolioItem(AuthData currentSpace, String isin) async {
-    debugPrint('_initPortfolioItem ${this.hashCode}');
-    _marketService.getLatestQuote(currentSpace, isin).then((value) {
-      latestQuotes[isin] = value;
-      if (_latestQuotesInitialized()) {
-        _calculateSum();
-        sumInitialized = true;
-      }
-      notifyListeners();
+  void _getLatestQuoteForItems(AuthData authData) {
+    items.forEach((element) {
+      _marketService.getLatestQuote(authData, element.instrument.isin).then((value) {
+        latestQuotes[element.instrument.isin] = value;
+        if (_latestQuotesInitialized()) {
+          _calculateSum();
+          sumInitialized = true;
+        }
+        notifyListeners();
+      });
     });
   }
 
-  Future<void> _initOrders(AuthData currentSpace) async {
-    debugPrint('_initOrders ${this.hashCode}');
+  void _initOrdersForItems(AuthData currentSpace) {
     _marketService.getOrders(currentSpace, null, OrderStatus.executed).then((value) {
       value.forEach((element) {
         existingOrders[element.instrument.isin]?.add(element);
@@ -80,13 +78,6 @@ class PortfolioProvider with ChangeNotifier {
           notifyListeners();
         }
       });
-    });
-  }
-
-  _calculatePortfolioSum() {
-    portfolioSum = 0;
-    items.forEach((element) {
-      portfolioSum += element.latestTotalValue;
     });
   }
 
