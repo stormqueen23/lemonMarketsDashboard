@@ -37,7 +37,7 @@ class PortfolioHeaderWidget extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            "Portfolio Wert: ${!sumInitialized ? '' : AppHelper.toDisplayMoneyString(currentMoney)}",
+            "Portfolio value: ${!sumInitialized ? '' : AppHelper.toDisplayMoneyString(currentMoney)}",
             textScaleFactor: 1.4,
           ),
           Container(
@@ -46,7 +46,7 @@ class PortfolioHeaderWidget extends StatelessWidget {
           !sumInitialized
               ? Container()
               : Text(
-                  positive ? '+' : '' + '$portfolioPercent %',
+                  (positive ? '+' : '') + '$portfolioPercent %',
                   style: TextStyle(color: AppHelper.getAmountColor(diff)),
                 )
         ],
@@ -60,19 +60,19 @@ class PortfolioHeaderWidget extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Kontostand:'),
-                Text('Davon verfügbar:'),
+                Text('Balance:'),
+                Text('Cash to invest:'),
                 Container(
                   height: 8,
                 ),
-                Text('Kaufpreis:'),
-                Text('Aktueller Wert:'),
-                Text('Differenz:'),
-                Text('Differenz %:'),
+                Text('Buy price:'),
+                Text('Current price:'),
+                Text('Difference:'),
+                Text('Difference %:'),
                 Container(
                   height: 8,
                 ),
-                Text('Verschiedene Positionen:'),
+                Text('Different positions:'),
               ],
             ),
             Column(
