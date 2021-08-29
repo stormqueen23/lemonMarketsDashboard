@@ -37,7 +37,7 @@ class PortfolioHeaderWidget extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            "Portfolio value: ${!sumInitialized ? '' : AppHelper.toDisplayMoneyString(currentMoney)}",
+            "Portfolio value: ${!sumInitialized ? '' : AppHelper.toDisplayMoneyString(currentSum)}",
             textScaleFactor: 1.4,
           ),
           Container(
