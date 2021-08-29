@@ -358,7 +358,7 @@ class PortfolioProvider with ChangeNotifier {
    }
 }
 ```
-For this we need another two new methods in our MarketService:
+For this we need two new methods in our MarketService:
 ```
 Future<SpaceState?> getSpaceState(AuthData authData) async {
  try {
@@ -400,6 +400,7 @@ while (nextUrl != null) {
 }
 ```
 After getting the state of the space and the portfolio items we have all data to display the basic structure of our portfolio list and we can start rendering the UI.
+We use a FutureBuilder to show a loadingWidget until all data in the init method has been collected.
 ```
 FutureBuilder(
    future: context.read<PortfolioProvider>().init(widget.authData),
