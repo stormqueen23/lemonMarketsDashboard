@@ -11,18 +11,18 @@ class PortfolioHeaderWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<PortfolioItem> items = context.watch<PortfolioProvider>().items;
-    double portfolioSum = context.watch<PortfolioProvider>().portfolioSum;
+    double buySum = context.watch<PortfolioProvider>().portfolioSum;
     double currentSum = context.watch<PortfolioProvider>().currentSum;
     double balance = context.watch<PortfolioProvider>().spaceStateDetails?.balance ?? 0;
     double cashToInvest = context.watch<PortfolioProvider>().spaceStateDetails?.cashToInvest ?? 0;
     bool sumInitialized = context.watch<PortfolioProvider>().sumInitialized;
 
-    String pre = currentSum > portfolioSum ? '+' : '';
+    String pre = currentSum > buySum ? '+' : '';
 
     double overallSum = currentSum + balance;
-    double diffPortfolio = currentSum - portfolioSum;
+    double diffPortfolio = currentSum - buySum;
 
-    String portfolioPercent = AppHelper.toDisplayPercentString(((diffPortfolio / portfolioSum) * 100.0));
+    String portfolioPercent = AppHelper.toDisplayPercentString(((diffPortfolio / buySum) * 100.0));
     String overallPercent = !sumInitialized ? '' : AppHelper.toDisplayPercentString(((diffPortfolio) / (overallSum)) * 100.0);
 
     Color textColor = AppHelper.getAmountColor(diffPortfolio);
@@ -58,60 +58,91 @@ class PortfolioHeaderWidget extends StatelessWidget {
       collapsed: Container(),
       expanded: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: Column(
+
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text('Balance:'),
-                Text('Cash to invest:'),
-                Container(
-                  height: 8,
-                ),
-                Text('Buy price:'),
-                Text('Current price:'),
-                Text('Difference:'),
-                Text('Difference %:'),
-                Container(
-                  height: 8,
-                ),
-                Text('Different positions:'),
+                Text('$balance'),
               ],
             ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
+            Container(
+              height: 3,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('$balance'),
+                Text('Cash to invest:'),
                 Text('$cashToInvest'),
-                Container(
-                  height: 8,
+              ],
+            ),
+            Container(
+              height: 8,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('Buy price:'),
+                Text('${AppHelper.toDisplayMoneyString(buySum)}'),
+              ],
+            ),
+            Container(
+              height: 3,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('Current price:'),
+                !sumInitialized
+                    ? SmallLoading()
+                    : Text(
+                  '${AppHelper.toDisplayMoneyString(currentSum)}',
+                  style: TextStyle(color: textColor),
                 ),
-                Text('${AppHelper.toDisplayMoneyString(portfolioSum)}'),
+              ],
+            ),
+            Container(
+              height: 3,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('Difference:'),
                 !sumInitialized
                     ? SmallLoading()
                     : Text(
-                        '${AppHelper.toDisplayMoneyString(currentSum)}',
-                        style: TextStyle(color: textColor),
-                      ),
-                !sumInitialized
-                    ? SmallLoading()
-                    : Text(
-                        '$pre ${AppHelper.toDisplayMoneyString(diffPortfolio)}',
-                        style: TextStyle(color: textColor),
-                      ),
-                !sumInitialized
-                    ? SmallLoading()
-                    : Text(
-                        '$pre $portfolioPercent',
-                        style: TextStyle(color:textColor),
-                      ),
-                Container(
-                  height: 8,
+                  '$pre ${AppHelper.toDisplayMoneyString(diffPortfolio)}',
+                  style: TextStyle(color: textColor),
                 ),
+              ],
+            ),
+            Container(
+              height: 3,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('Difference %:'),
+                !sumInitialized
+                    ? SmallLoading()
+                    : Text(
+                  '$pre $portfolioPercent',
+                  style: TextStyle(color:textColor),
+                ),
+              ],
+            ),
+            Container(
+              height: 8,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('Different positions:'),
                 Text('${items.length.toString()}')
               ],
-            )
+            ),
           ],
         ),
       ),
