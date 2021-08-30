@@ -10,19 +10,23 @@ import 'package:lemon_markets_simple_dashboard/provider/portfolioProvider.dart';
 class PortfolioHeaderWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    String cashToInvest = AppHelper.toDisplayMoneyString(context.watch<PortfolioProvider>().spaceStateDetails?.cashToInvest);
-    String balance = AppHelper.toDisplayMoneyString(context.watch<PortfolioProvider>().spaceStateDetails?.balance);
+    List<PortfolioItem> items = context.watch<PortfolioProvider>().items;
     double portfolioSum = context.watch<PortfolioProvider>().portfolioSum;
     double currentSum = context.watch<PortfolioProvider>().currentSum;
-    double currentMoney = context.watch<PortfolioProvider>().spaceStateDetails?.balance ?? 0 + currentSum;
+    double balance = context.watch<PortfolioProvider>().spaceStateDetails?.balance ?? 0;
+    double cashToInvest = context.watch<PortfolioProvider>().spaceStateDetails?.cashToInvest ?? 0;
     bool sumInitialized = context.watch<PortfolioProvider>().sumInitialized;
-    List<PortfolioItem> items = context.watch<PortfolioProvider>().items;
 
-    double diff = currentSum - portfolioSum;
-    bool positive = currentSum > portfolioSum;
+    String pre = currentSum > portfolioSum ? '+' : '';
 
-    String portfolioPercent = !sumInitialized ? '' : ((diff / currentMoney) * 100.0).toStringAsFixed(2);
-    debugPrint("PortfolioHeaderWidget");
+    double overallSum = currentSum + balance;
+    double diffPortfolio = currentSum - portfolioSum;
+
+    String portfolioPercent = AppHelper.toDisplayPercentString(((diffPortfolio / portfolioSum) * 100.0));
+    String overallPercent = !sumInitialized ? '' : AppHelper.toDisplayPercentString(((diffPortfolio) / (overallSum)) * 100.0);
+
+    Color textColor = AppHelper.getAmountColor(diffPortfolio);
+
     return ExpandablePanel(
       theme: ExpandableThemeData(
         iconColor: Colors.yellow,
@@ -37,7 +41,7 @@ class PortfolioHeaderWidget extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            "Portfolio value: ${!sumInitialized ? '' : AppHelper.toDisplayMoneyString(currentSum)}",
+            "Portfolio value: ${!sumInitialized ? '' : AppHelper.toDisplayMoneyString(overallSum)}",
             textScaleFactor: 1.4,
           ),
           Container(
@@ -46,8 +50,8 @@ class PortfolioHeaderWidget extends StatelessWidget {
           !sumInitialized
               ? Container()
               : Text(
-                  (positive ? '+' : '') + '$portfolioPercent %',
-                  style: TextStyle(color: AppHelper.getAmountColor(diff)),
+                  pre + '$overallPercent',
+                  style: TextStyle(color: textColor),
                 )
         ],
       ),
@@ -88,19 +92,19 @@ class PortfolioHeaderWidget extends StatelessWidget {
                     ? SmallLoading()
                     : Text(
                         '${AppHelper.toDisplayMoneyString(currentSum)}',
-                        style: TextStyle(color: AppHelper.getAmountColor(diff)),
+                        style: TextStyle(color: textColor),
                       ),
                 !sumInitialized
                     ? SmallLoading()
                     : Text(
-                        '${positive ? '+' : ''} ${AppHelper.toDisplayMoneyString(diff)}',
-                        style: TextStyle(color: AppHelper.getAmountColor(diff)),
+                        '$pre ${AppHelper.toDisplayMoneyString(diffPortfolio)}',
+                        style: TextStyle(color: textColor),
                       ),
                 !sumInitialized
                     ? SmallLoading()
                     : Text(
-                        '${positive ? '+' : ''} ${AppHelper.toDisplayPercentString(((diff / portfolioSum) * 100.0))}',
-                        style: TextStyle(color: AppHelper.getAmountColor(diff)),
+                        '$pre $portfolioPercent',
+                        style: TextStyle(color:textColor),
                       ),
                 Container(
                   height: 8,
