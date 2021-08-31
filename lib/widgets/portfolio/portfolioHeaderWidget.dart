@@ -59,7 +59,6 @@ class PortfolioHeaderWidget extends StatelessWidget {
       expanded: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8),
         child: Column(
-
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
